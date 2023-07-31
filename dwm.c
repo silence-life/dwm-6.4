@@ -216,6 +216,7 @@ static void show(const Arg *arg);
 static void showall(const Arg *arg);
 static void showwin(Client *c);
 static void showhide(Client *c);
+static void shiftview(const Arg *arg);
 static void sigchld(int unused);
 static void spawn(const Arg *arg);
 static void tag(const Arg *arg);
@@ -1790,6 +1791,30 @@ showhide(Client *c)
 		showhide(c->snext);
 		XMoveWindow(dpy, c->win, WIDTH(c) * -2, c->y);
 	}
+}
+
+void
+shiftview(const Arg *arg) {
+   Arg shifted;
+
+   int k;
+   Client *c = selmon->clients;
+
+   if(arg->i > 0) /* left circular shift */
+	   for (k=1;k<LENGTH(tags);k++)
+   {        shifted.ui = (selmon->tagset[selmon->seltags] << k)
+          | (selmon->tagset[selmon->seltags] >> (LENGTH(tags) - k));
+        for (c = selmon->clients; c; c = c->next)
+            if (c->tags & shifted.ui) {view(&shifted); return;}
+   }
+
+   else /* right circular shift */
+	   for (k=1;k<LENGTH(tags);k++)
+   {       shifted.ui = selmon->tagset[selmon->seltags] >> k
+          | selmon->tagset[selmon->seltags] << (LENGTH(tags) - k);
+        for (c = selmon->clients; c; c = c->next)
+            if (c->tags & shifted.ui) {view(&shifted); return;}
+   }
 }
 
 void
