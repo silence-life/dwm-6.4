@@ -28,7 +28,7 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
-//	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
+	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 //	{ "Firefox",  NULL,       NULL,       0,            0,           -1 },
 };
 
@@ -62,6 +62,7 @@ static const char *termcmd[]  = { "st", NULL };
 
 static const Key keys[] = {
 	/* modifier                     key                  function        argument */          
+	{ MODKEY,                       XK_n,                newempty,       {0} },
 	{ MODKEY,                       XK_l,                shiftview,      {.i = +1 } },
 	{ MODKEY,                       XK_j,                shiftview,      {.i = -1 } },
 	{ MODKEY,                       XK_Right,            shiftview,      {.i = +1 } },
@@ -81,10 +82,10 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_l,                setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_Return,           zoom,           {0} },
 	{ MODKEY,                       XK_Tab,              view,           {0} },
-	{ MODKEY|ShiftMask,             XK_c,                killclient,     {0} },
+	{ MODKEY,                       XK_c,                killclient,     {0} },
+	{ MODKEY,                       XK_slash,            killclient,     {0} },
 	{ MODKEY,                       XK_t,                setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,                setlayout,      {.v = &layouts[1]} },
-	{ MODKEY,                       XK_space,            setlayout,      {0} },
+	{ MODKEY,                       XK_f,                setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,            togglefloating, {0} },
 	{ MODKEY,                       XK_0,                view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,                tag,            {.ui = ~0 } },
