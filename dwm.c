@@ -194,7 +194,7 @@ static void maprequest(XEvent *e);
 static void monocle(Monitor *m);
 static void motionnotify(XEvent *e);
 static void movemouse(const Arg *arg);
-static void newempty(void);
+static void newempty(const Arg *arg);
 static Client *nexttiled(Client *c);
 static void pop(Client *c);
 static void propertynotify(XEvent *e);
@@ -762,8 +762,6 @@ void
 drawbar(Monitor *m)
 {
 	int x, w, tw = 0, n = 0, scm;
-	int boxs = drw->fonts->h / 9;
-	int boxw = drw->fonts->h / 6 + 2;
 	unsigned int i, occ = 0, urg = 0;
 	Client *c;
 
@@ -1119,7 +1117,7 @@ incnmaster(const Arg *arg)
     int nmaster = selmon->nmaster + arg->i;
     if (selmon->bt <= 1)
         nmaster = 1;
-    else if (nmaster > 2)
+	else if (nmaster > 2)
         nmaster = 1;
 	selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag] = MAX(nmaster, 0);
 	arrange(selmon);
@@ -1346,7 +1344,7 @@ movemouse(const Arg *arg)
 }
 
 void
-newempty(void)
+newempty(const Arg *arg)
 {
 	Client *c;
 	int i,n;
@@ -2324,8 +2322,15 @@ view(const Arg *arg)
 	int i;
 	unsigned int tmptag;
 
-	if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags])
-		return;
+	if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags]) {
+		if (arg->ui == ~0) {
+			selmon->seltags ^= 1; /* toggle sel tagset */
+			uint target = selmon->sel ? selmon->sel->tags : selmon->tagset[selmon->seltags];
+			selmon->tagset[selmon->seltags] = target & TAGMASK;
+    	}
+ 	   else { return; }
+	}
+	else {
 	selmon->seltags ^= 1; /* toggle sel tagset */
 	if (arg->ui & TAGMASK) {
 		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
@@ -2341,6 +2346,7 @@ view(const Arg *arg)
 		tmptag = selmon->pertag->prevtag;
 		selmon->pertag->prevtag = selmon->pertag->curtag;
 		selmon->pertag->curtag = tmptag;
+		}
 	}
 
 	selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag];
