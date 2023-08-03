@@ -1,9 +1,10 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const int overviewgappo           = 30;        /* overview时 窗口与边缘 缝隙大小 */
-static const int overviewgappi           = 20;        /* overview时 窗口与窗口 缝隙大小 */
-static const unsigned int borderpx  = 3;        /* border pixel of windows */
+static const int overviewgappo      = 30;        /* overview时 窗口与边缘 缝隙大小 */
+static const int overviewgappi      = 20;        /* overview时 窗口与窗口 缝隙大小 */
+static const unsigned int borderpx  = 2;        /* border pixel of windows */
+static const unsigned int gappx     = 6;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
@@ -37,7 +38,7 @@ static const Rule rules[] = {
 /* layout(s) */
 static const float mfact     = 0.8;  /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
-static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
+static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
 static const Layout overviewlayout = { "",  overview };
@@ -74,6 +75,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_j,                shiftview,      {.i = -1 } },
 	{ MODKEY,                       XK_Right,            shiftview,      {.i = +1 } },
 	{ MODKEY,                       XK_Left,             shiftview,      {.i = -1 } },
+	{ ShiftMask,                    XK_End,              shiftview,      {.i = -1 } },
 	{ MODKEY,                       XK_p,                spawn,          {.v = dmenucmd } },
 	{ MODKEY, 		                XK_semicolon,        spawn,          {.v = termcmd } },
 	{ MODKEY|ShiftMask,             XK_Return,           spawn,          {.v = termcmd } },                      
