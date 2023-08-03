@@ -68,7 +68,8 @@ enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms *
 enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
        ClkClientWin, ClkRootWin, ClkLast }; /* clicks */
 
-typedef union {
+//typedef union {
+typedef struct {
 	int i;
 	unsigned int ui;
 	float f;
@@ -2440,6 +2441,8 @@ view(const Arg *arg)
 {
 	int i;
 	unsigned int tmptag;
+	int n = 0;
+	Client *c;
 
 	if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags]) {
 		if (arg->ui == ~0) {
@@ -2479,6 +2482,16 @@ view(const Arg *arg)
 
 	focus(NULL);
 	arrange(selmon);
+
+    // 若当前tag无窗口 且附加了v参数 则执行
+    if (arg->v) {
+        for (c = selmon->clients; c; c = c->next)
+            if (c->tags & arg->ui && !HIDDEN(c))
+                n++;
+        if (n == 0) {
+            spawn(&(Arg){ .v = (const char*[]){ "/bin/sh", "-c", arg->v, NULL } });
+        }
+    }
 }
 
 Client *
