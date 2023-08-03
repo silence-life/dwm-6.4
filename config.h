@@ -3,7 +3,7 @@
 /* appearance */
 static const int overviewgappo           = 30;        /* overview时 窗口与边缘 缝隙大小 */
 static const int overviewgappi           = 20;        /* overview时 窗口与窗口 缝隙大小 */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int borderpx  = 3;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
@@ -66,6 +66,9 @@ static const char *termcmd[]  = { "st", NULL };
 
 static const Key keys[] = {
 	/* modifier                     key                  function        argument */          
+	{ MODKEY,                       XK_minus,            scratchpad_hide, {0} },   
+	{ MODKEY,                       XK_equal,            scratchpad_remove,{0} },
+	{ MODKEY,                       XK_o,                scratchpad_show, {0} },   
 	{ MODKEY,                       XK_n,                newempty,       {0} },
 	{ MODKEY,                       XK_l,                shiftview,      {.i = +1 } },
 	{ MODKEY,                       XK_j,                shiftview,      {.i = -1 } },
