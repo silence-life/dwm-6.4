@@ -214,7 +214,7 @@ static void runAutostart(void);
 static void scan(void);
 static void scratchpad_hide ();
 static _Bool scratchpad_last_showed_is_killed (void);
-static void scratchpad_remove ();
+//static void scratchpad_remove ();
 static void scratchpad_show ();
 static void scratchpad_show_client (Client * c);
 static void scratchpad_show_first (void);
@@ -1733,7 +1733,9 @@ scan(void)
 
 static void scratchpad_hide ()
 {
-	if (selmon -> sel)
+	if (selmon -> sel && scratchpad_last_showed != NULL && selmon -> sel == scratchpad_last_showed)
+		scratchpad_last_showed = NULL;
+	else if (selmon -> sel)
 	{
 		selmon -> sel -> tags = SCRATCHPAD_MASK;
 		selmon -> sel -> isfloating = 0;
@@ -1755,13 +1757,13 @@ static _Bool scratchpad_last_showed_is_killed (void)
 	}
 	return killed;
 }
-
+/*
 static void scratchpad_remove ()
 {
 	if (selmon -> sel && scratchpad_last_showed != NULL && selmon -> sel == scratchpad_last_showed)
 		scratchpad_last_showed = NULL;
 }
-
+*/
 static void scratchpad_show ()
 {
 	if (scratchpad_last_showed == NULL || scratchpad_last_showed_is_killed ())

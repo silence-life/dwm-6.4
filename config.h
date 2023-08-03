@@ -67,9 +67,9 @@ static const char *termcmd[]  = { "st", NULL };
 
 static const Key keys[] = {
 	/* modifier                     key                  function        argument */          
-	{ MODKEY,                       XK_minus,            scratchpad_hide, {0} },   
-	{ MODKEY,                       XK_equal,            scratchpad_remove,{0} },
+	{ MODKEY,                       XK_u,                scratchpad_hide, {0} },   
 	{ MODKEY,                       XK_o,                scratchpad_show, {0} },   
+//	{ MODKEY,                       XK_equal,            scratchpad_remove,{0} },
 	{ MODKEY,                       XK_n,                newempty,       {0} },
 	{ MODKEY,                       XK_l,                shiftview,      {.i = +1 } },
 	{ MODKEY,                       XK_j,                shiftview,      {.i = -1 } },
