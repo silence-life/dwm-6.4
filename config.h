@@ -76,7 +76,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_Right,            shiftview,      {.i = +1 } },
 	{ MODKEY,                       XK_Left,             shiftview,      {.i = -1 } },
 	{ ShiftMask,                    XK_End,              shiftview,      {.i = -1 } },
-	{ MODKEY,                       XK_p,                spawn,          {.v = dmenucmd } },
+	{ MODKEY,                       XK_p,                spawn,      SHCMD("bemenu-run -ibnl10 --fn 'CodeNewRoman Nerd Font Mono Italic 15' -p'run' -M13 -W0.3") },
 	{ MODKEY, 		                XK_semicolon,        spawn,          {.v = termcmd } },
 	{ MODKEY|ShiftMask,             XK_Return,           spawn,          {.v = termcmd } },                      
 	{ MODKEY,                       XK_b,                togglebar,      {0} },
