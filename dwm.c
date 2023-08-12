@@ -2273,8 +2273,12 @@ togglewin(const Arg *arg)
 	} else {
 		if (HIDDEN(c))
 			showwin(c);
-		focus(c);
-		restack(selmon);
+		if (selmon->lt[selmon->sellt] == &layouts[0] && !selmon->isoverview)
+			pop(c);
+		else {
+			focus(c);
+			restack(selmon);
+         }
 	}
 }
 
