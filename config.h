@@ -40,7 +40,8 @@ static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
-static const Layout overviewlayout = { "",  overview };
+//static const Layout overviewlayout = { "",  overview };
+static const Layout overviewlayout = { "#",  overview };
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
