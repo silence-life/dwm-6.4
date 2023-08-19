@@ -27,7 +27,7 @@ static const char *colors[][3]      = {
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "\\", "" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -40,18 +40,18 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
-static const float mfact     = 0.8;  /* factor of master area size [0.05..0.95] */
+static const float mfact     = 0.7;  /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
-//static const Layout overviewlayout = { "",  overview };
-static const Layout overviewlayout = { "#",  overview };
+static const Layout overviewlayout = { "田",  overview };
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[]=",      tile },    /* first entry is default */
+	{ "品",      htile },    /* first entry is default */
 	{ "[M]",      monocle },
+	{ "[]=",      vtile },
 //	{ "><>",      NULL },    /* no layout function means floating behavior */
 };
 
@@ -72,7 +72,7 @@ static const char *termcmd[]  = { "st", NULL };
 #include <X11/XF86keysym.h>
 static const Key keys[] = {
 	/* modifier             key                  function        argument */          
-	{ MODKEY,               XK_u,                scratchpad_hide, {0} },   
+	{ MODKEY,               XK_u,                scratchpad_hide, {0} },   /*  hide and unhide  */
 	{ MODKEY,               XK_o,                scratchpad_show, {0} },   
 //	{ MODKEY,               XK_equal,            scratchpad_remove,{0} },
 	{ MODKEY,               XK_n,                newempty,       {0} },
@@ -90,20 +90,22 @@ static const Key keys[] = {
 	{ MODKEY,               XK_Up,               focusstackvis,  {.i = -1 } },
 	{ MODKEY,               XK_k,                focusstackvis,  {.i = +1 } },
 	{ MODKEY,               XK_i,                focusstackvis,  {.i = -1 } },
-	{ MODKEY|ShiftMask,     XK_k,                focusstackhid,  {.i = +1 } },
-	{ MODKEY|ShiftMask,     XK_i,                focusstackhid,  {.i = -1 } },
+	{ MODKEY|Mod1Mask,      XK_k,                focusstackhid,  {.i = +1 } },
+	{ MODKEY|Mod1Mask,      XK_i,                focusstackhid,  {.i = -1 } },
 	{ MODKEY,               XK_e,                incnmaster,     {.i = +1 } },
-	{ MODKEY|ShiftMask,     XK_j,                setmfact,       {.f = -0.05} },
-	{ MODKEY|ShiftMask,     XK_l,                setmfact,       {.f = +0.05} },
+	{ MODKEY|ShiftMask,     XK_i,                setmfact,       {.f = -0.05} },
+	{ MODKEY|ShiftMask,     XK_k,                setmfact,       {.f = +0.05} },
 	{ MODKEY,               XK_Return,           zoom,           {0} },
+	{ MODKEY,               XK_space,            zoom,           {0} },
 	{ MODKEY,               XK_Tab,              view,           {0} },
 	{ MODKEY,               XK_c,                killclient,     {0} },
 	{ MODKEY,               XK_slash,            killclient,     {0} },
-	{ MODKEY,               XK_t,                setlayout,      {.v = &layouts[0]} },
-	{ MODKEY,               XK_f,                setlayout,      {0} },
+	{ MODKEY,               XK_t,                setlayout,      {.v = &layouts[0]} },  /*  cycle in htile and vtile layout */
+	{ MODKEY,               XK_f,                setlayout,      {.v = &layouts[1]} },  /* cycle in monocle and previous layout */
+	{ MODKEY,               XK_m,                togglefullscr,  {0} },
 	{ MODKEY|ShiftMask,     XK_space,            togglefloating, {0} },
 	{ MODKEY,               XK_0,                view,           {.ui = ~0 } },
-    { MODKEY,               XK_a,                toggleoverview,   {0} },      /*toggle overview layout or go to tag which own focus window*/
+	{ MODKEY,               XK_a,                toggleoverview, {0} },      /* toggle overview layout or go to tag which own focus window */
 	{ MODKEY|ShiftMask,     XK_0,                tag,            {.ui = ~0 } },
 	{ MODKEY,               XK_comma,            focusmon,       {.i = -1 } },
 	{ MODKEY,               XK_period,           focusmon,       {.i = +1 } },
@@ -125,6 +127,8 @@ static const Key keys[] = {
 	TAGKEYS(                XK_7,                                6,"st ranger /seven")
 	TAGKEYS(                XK_8,                                7,"st ranger /eight")
 	TAGKEYS(                XK_9,                                8,0)
+	TAGKEYS(                XK_backslash,                        9,0)
+	TAGKEYS(                XK_z,                                10,"st mpv --shuffle /seven/music/aac/")
 	{ MODKEY|ShiftMask,     XK_F12,              quit,           {0} },                                
 };
 

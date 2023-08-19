@@ -1,4 +1,6 @@
-![dwm-6.4-overview-layout](https://github.com/silence-life/dwm/blob/main/dwm-grid.png)  
+![dwm-6.4-htile-layout](https://github.com/silence-life/pictures/blob/main/htileLayout.png)  
+![dwm-6.4-overview-layout](https://github.com/silence-life/pictures/blob/main/overviewLayout.png)  
+![dwm-6.4-vtile-layout](https://github.com/silence-life/pictures/blob/main/vtileLayout.png)  
       +patch dwm-awesomebar-20230431-6.4.diff  
       +modified config.h  
       +patch dwm-hide_vacant_tags-6.3.diff  
@@ -17,5 +19,5 @@
       on tile layout,when click the unselected taskbar,the window pop as main window  
       when togglefloating,the window go to the center of the screen  
       fix overview layout bug and make it more valid  
-      modify config.h  
       +patch dwm-systray-6.4.diff  
+      +layout htile(main on top,others on bottom), super+m toggle fullscreen  

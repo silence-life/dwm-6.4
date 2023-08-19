@@ -262,9 +262,11 @@ static void spawn(const Arg *arg);
 static Monitor *systraytomon(Monitor *m);
 static void tag(const Arg *arg);
 static void tagmon(const Arg *arg);
-static void tile(Monitor *m);
+static void vtile(Monitor *m);
+static void htile(Monitor *m);
 static void togglebar(const Arg *arg);
 static void togglefloating(const Arg *arg);
+static void togglefullscr(const Arg *arg);
 static void toggleoverview(const Arg *arg);
 static void toggletag(const Arg *arg);
 static void toggleview(const Arg *arg);
@@ -2095,10 +2097,16 @@ setfullscreen(Client *c, int fullscreen)
 void
 setlayout(const Arg *arg)
 {
-	if (!arg || !arg->v || arg->v != selmon->lt[selmon->sellt])
+	if (arg->v != selmon->lt[selmon->sellt]) {
 		selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag] ^= 1;
-	if (arg && arg->v)
 		selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt] = (Layout *)arg->v;
+	}
+	else if (selmon->lt[selmon->sellt] == &layouts[0])
+		selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt] = (Layout *)&layouts[2];
+	else if (selmon->lt[selmon->sellt] == &layouts[1])
+		selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag] ^= 1;
+	else
+		return;
 	strncpy(selmon->ltsymbol, selmon->lt[selmon->sellt]->symbol, sizeof selmon->ltsymbol);
 	if (selmon->sel)
 		arrange(selmon);
@@ -2330,7 +2338,7 @@ tagmon(const Arg *arg)
 }
 
 void
-tile(Monitor *m)
+vtile(Monitor *m)
 {
 	unsigned int i, n, h, mw, my, ty;
 	Client *c;
@@ -2358,6 +2366,34 @@ tile(Monitor *m)
 }
 
 void
+htile(Monitor *m)
+{
+	unsigned int i, n, w, mh, mx, tx;
+	Client *c;
+
+	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+	if (n == 0)
+		return;
+
+	if (n > m->nmaster)
+		mh = m->nmaster ? m->wh * m->mfact : 0;
+	else
+		mh = m->wh;
+	for (i = mx = tx = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+		if (i < m->nmaster) {
+			w = (m->ww - mx) / (MIN(n, m->nmaster) - i);
+			resize(c, m->wx + mx, m->wy, w - (2*c->bw), mh - (2*c->bw) + (n > 1 ? gappx : 0), 0);
+			if (mx + WIDTH(c) < m->ww)
+				mx += WIDTH(c);
+		} else {
+			w = (m->ww - tx) / (n - i);
+			resize(c, m->wx + tx, m->wy + mh, w - (2*c->bw), m->wh - mh - (2*c->bw), 0);
+			if (tx + WIDTH(c) < m->ww)
+				tx += WIDTH(c);
+		}
+}
+
+void
 togglebar(const Arg *arg)
 {
 	selmon->showbar = selmon->pertag->showbars[selmon->pertag->curtag] = !selmon->showbar;
@@ -2375,6 +2411,13 @@ togglebar(const Arg *arg)
 		XConfigureWindow(dpy, systray->win, CWY, &wc);
 	}
 	arrange(selmon);
+}
+
+void
+togglefullscr(const Arg *arg)
+{
+  if(selmon->sel)
+    setfullscreen(selmon->sel, !selmon->sel->isfullscreen);
 }
 
 void
