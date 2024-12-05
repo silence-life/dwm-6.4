@@ -3,7 +3,7 @@
 /* appearance */
 static const int overviewgappo      = 30;        /* on overview,gap in win and border */
 static const int overviewgappi      = 20;        /* on overview,gap in win and win */
-static const unsigned int borderpx  = 2;        /* border pixel of windows */
+static const unsigned int borderpx  = 3;        /* border pixel of windows */
 static const unsigned int gappx     = 6;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
@@ -22,7 +22,7 @@ static const char col_cyan[]        = "#005577";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeSel]  = { col_gray4, col_cyan,  "#770000" },
 	[SchemeHid]  = { col_cyan,  col_gray1, col_cyan  },
 };
 
@@ -67,7 +67,7 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static const char *termcmd[]  = { "st", NULL };
+static const char *termcmd[]  = { "terminal", NULL };
 
 #include <X11/XF86keysym.h>
 static const Key keys[] = {
@@ -102,7 +102,7 @@ static const Key keys[] = {
 	{ MODKEY,               XK_slash,            killclient,     {0} },
 	{ MODKEY,               XK_t,                setlayout,      {.v = &layouts[0]} },  /*  cycle in htile and vtile layout */
 	{ MODKEY,               XK_f,                setlayout,      {.v = &layouts[1]} },  /* cycle in monocle and previous layout */
-	{ MODKEY,               XK_m,                togglefullscr,  {0} },
+	{ MODKEY|ShiftMask,     XK_f,                togglefullscr,  {0} },
 	{ MODKEY|ShiftMask,     XK_space,            togglefloating, {0} },
 	{ MODKEY,               XK_0,                view,           {.ui = ~0 } },
 	{ MODKEY,               XK_a,                toggleoverview, {0} },      /* toggle overview layout or go to tag which own focus window */
@@ -124,11 +124,12 @@ static const Key keys[] = {
 	TAGKEYS(                XK_4,                                3,0)
 	TAGKEYS(                XK_5,                                4,0)
 	TAGKEYS(                XK_6,                                5,0)
-	TAGKEYS(                XK_7,                                6,"st ranger /seven")
-	TAGKEYS(                XK_8,                                7,"st ranger /eight")
+	TAGKEYS(                XK_7,                                6,0)
+//	TAGKEYS(                XK_7,                                6,"terminal ranger /seven")
+	TAGKEYS(                XK_8,                                7,0)
 	TAGKEYS(                XK_9,                                8,0)
 	TAGKEYS(                XK_backslash,                        9,0)
-	TAGKEYS(                XK_z,                                10,"st mpv --shuffle /seven/music/aac/")
+//	TAGKEYS(                XK_backslash,                        9,"terminal mpv --shuffle /seven/music/aac/")
 	{ MODKEY|ShiftMask,     XK_F12,              quit,           {0} },                                
 };
 

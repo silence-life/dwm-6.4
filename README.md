@@ -21,3 +21,4 @@
       fix overview layout bug and make it more valid  
       +patch dwm-systray-6.4.diff  
       +layout htile(main on top,others on bottom), super+m toggle fullscreen  
+      after closing a tag's last window, the tag's layout reset to layouts[0]  
