@@ -235,7 +235,7 @@ static void resizemouse(const Arg *arg);
 static void resizerequest(XEvent *e);
 static void restack(Monitor *m);
 static void run(void);
-static void runAutostart(void);
+static void runautostart(void);
 static void scan(void);
 static void scratchpad_hide ();
 static _Bool scratchpad_last_showed_is_killed (void);
@@ -1571,22 +1571,45 @@ movemouse(const Arg *arg)
 	}
 }
 
+/*
 void
 newempty(const Arg *arg)
 {
 	Client *c;
-	int i,n;
-for (i=0;i < LENGTH(tags);i++) {
-
-		n=0;
-        for (c = selmon->clients; c; c = c->next)
-//            if (c->tags & 1 << i & TAGMASK && !HIDDEN(c)) {n++; break;}
-            if (c->tags & 1 << i & TAGMASK) {n++; break;}
-				if (n == 0)
-				{ 	view(&(Arg) {.ui = 1 << i & TAGMASK});
-					return;
-	   			}
+	int i;
+	int n;
+	for (i=0;i<LENGTH(tags);i++) {
+		n = 0;
+		for (c = selmon->clients; c; c = c->next)
+			//if (c->tags & 1 << i & TAGMASK && !HIDDEN(c)) {n++; break;}
+			if (c->tags & 1 << i & TAGMASK) {
+				n++;
+				break;
+			}
+		if ( n == 0 ) {
+			view(&(Arg) {.ui = 1 << i & TAGMASK});
+			return;
 		}
+	}
+}
+*/
+
+void
+newempty(const Arg *arg)
+{
+	Client *c;
+	unsigned int tmptag = 0;
+	int i;
+
+    for (c = selmon->clients; c; c = c->next)
+		tmptag |= c->tags;
+	for (i=0;i<LENGTH(tags);i++) {
+		if (!(tmptag>>i & 1)) {
+			view(&(Arg) {.ui = 1<<i & TAGMASK});
+			return;
+		}
+	}
+	return;
 }
 
 Client *
@@ -1873,7 +1896,7 @@ run(void)
 }
 
 void
-runAutostart(void) {
+runautostart(void) {
 	system("cd ~/.dwm; ./autostart.sh&");
 }
 
@@ -2288,21 +2311,21 @@ shiftview(const Arg *arg) {
    int k;
    Client *c = selmon->clients;
 
-   if(arg->i > 0) /* left circular shift */
-	   for (k=1;k<LENGTH(tags);k++)
-   {        shifted.ui = (selmon->tagset[selmon->seltags] << k)
-          | (selmon->tagset[selmon->seltags] >> (LENGTH(tags) - k));
-        for (c = selmon->clients; c; c = c->next)
-            if (c->tags & shifted.ui) {view(&shifted); return;}
-   }
+	if(arg->i > 0) /* left circular shift */
+		for (k=1;k<LENGTH(tags);k++) {
+			shifted.ui = (selmon->tagset[selmon->seltags] << k)
+			| (selmon->tagset[selmon->seltags] >> (LENGTH(tags) - k));
+			for (c = selmon->clients; c; c = c->next)
+				if (c->tags & shifted.ui) { view(&shifted); return; }
+		}
 
-   else /* right circular shift */
-	   for (k=1;k<LENGTH(tags);k++)
-   {       shifted.ui = selmon->tagset[selmon->seltags] >> k
-          | selmon->tagset[selmon->seltags] << (LENGTH(tags) - k);
-        for (c = selmon->clients; c; c = c->next)
-            if (c->tags & shifted.ui) {view(&shifted); return;}
-   }
+	else /* right circular shift */
+		for (k=1;k<LENGTH(tags);k++) {
+			shifted.ui = selmon->tagset[selmon->seltags] >> k
+			| selmon->tagset[selmon->seltags] << (LENGTH(tags) - k);
+			for (c = selmon->clients; c; c = c->next)
+				if (c->tags & shifted.ui) { view(&shifted); return; }
+		}
 }
 
 void
@@ -2378,8 +2401,8 @@ htile(Monitor *m)
 	Client *c;
 
 	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
-	if (n == 0)
-		return;
+		if (n == 0)
+			return;
 
 	if (n > m->nmaster)
 		mh = m->nmaster ? m->wh * m->mfact : 0;
@@ -2391,7 +2414,8 @@ htile(Monitor *m)
 			resize(c, m->wx + mx, m->wy, w - (2*c->bw), mh - (2*c->bw) + (n > 1 ? gappx : 0), 0);
 			if (mx + WIDTH(c) < m->ww)
 				mx += WIDTH(c);
-		} else {
+		}
+		else {
 			w = (m->ww - tx) / (n - i);
 			resize(c, m->wx + tx, m->wy + mh, w - (2*c->bw), m->wh - mh - (2*c->bw), 0);
 			if (tx + WIDTH(c) < m->ww)
@@ -2420,13 +2444,6 @@ togglebar(const Arg *arg)
 }
 
 void
-togglefullscr(const Arg *arg)
-{
-  if(selmon->sel)
-    setfullscreen(selmon->sel, !selmon->sel->isfullscreen);
-}
-
-void
 togglefloating(const Arg *arg)
 {
 	if (!selmon->sel)
@@ -2435,11 +2452,15 @@ togglefloating(const Arg *arg)
 		return;
 	selmon->sel->isfloating = !selmon->sel->isfloating || selmon->sel->isfixed;
 	if (selmon->sel->isfloating)
-//		resize(selmon->sel, selmon->sel->x, selmon->sel->y,
-//			selmon->sel->w, selmon->sel->h, 0);
-        resize(selmon->sel, selmon->wx + selmon->ww / 6, selmon->wy + selmon->wh / 6,
-            selmon->ww / 3 * 2, selmon->wh / 3 * 2, 0);
+        resize(selmon->sel, selmon->wx + selmon->ww / 6, selmon->wy + selmon->wh / 6, selmon->ww / 3 * 2, selmon->wh / 3 * 2, 0);
 	arrange(selmon);
+}
+
+void
+togglefullscr(const Arg *arg)
+{
+  if(selmon->sel)
+    setfullscreen(selmon->sel, !selmon->sel->isfullscreen);
 }
 
 // 显示所有tag 或 跳转到聚焦窗口的tag
@@ -2512,7 +2533,8 @@ void
 togglewin(const Arg *arg)
 {
 	Client *c = (Client*)arg->v;
-
+	if (c == NULL)
+		return;
 	if (c == selmon->sel) {
 		hidewin(c);
 		focus(NULL);
@@ -2525,7 +2547,7 @@ togglewin(const Arg *arg)
 		else {
 			focus(c);
 			restack(selmon);
-         }
+        }
 	}
 }
 
@@ -2954,37 +2976,53 @@ void
 view(const Arg *arg)
 {
 	int i;
-	unsigned int tmptag;
-	int n = 0;
+	unsigned int tmptag = 0;
 	Client *c;
 
-	if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags]) {
-		if (arg->ui == ~0) {
-			selmon->seltags ^= 1; /* toggle sel tagset */
-			uint target = selmon->sel ? selmon->sel->tags : selmon->tagset[selmon->seltags];
-			selmon->tagset[selmon->seltags] = target & TAGMASK;
-    	}
-//		else { return; }
-	}
-	else {
-	selmon->seltags ^= 1; /* toggle sel tagset */
-	if (arg->ui & TAGMASK) {
-		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
-		selmon->pertag->prevtag = selmon->pertag->curtag;
-
-		if (arg->ui == ~0)
-			selmon->pertag->curtag = 0;
-		else {
-			for (i = 0; !(arg->ui & 1 << i); i++) ;
-			selmon->pertag->curtag = i + 1;
+    if ((arg->ui) == ~0) {
+        for (c = selmon->clients; c; c = c->next)
+            tmptag |= c->tags;
+        if ((tmptag & TAGMASK) == selmon->tagset[selmon->seltags]) {
+            selmon->seltags ^= 1; /* toggle sel tagset */
+            uint target = selmon->sel ? selmon->sel->tags : selmon->tagset[selmon->seltags];
+            selmon->tagset[selmon->seltags] = target & TAGMASK;
+        }
+        else {
+            selmon->seltags ^= 1; /* toggle sel tagset */
+            selmon->tagset[selmon->seltags] = tmptag & TAGMASK;
+            selmon->pertag->prevtag = selmon->pertag->curtag;
+            selmon->pertag->curtag = 0;
+        }
+    }
+    else {
+        if ((arg->ui & TAGMASK) == selmon->tagset[selmon->seltags]) {
+		    // 若当前tag无窗口 且附加了v参数 则执行
+		    if (arg->v) {
+		        for (c = selmon->clients; c; c = c->next)
+		            // if (c->tags & arg->ui && !HIDDEN(c))
+		            if (c->tags & arg->ui)
+		                return;
+				spawn(&(Arg){ .v = (const char*[]){ "/bin/sh", "-c", arg->v, NULL } });
+				return;
+		    }
+//			else
+//				return;
 		}
-	} else {
-		tmptag = selmon->pertag->prevtag;
-		selmon->pertag->prevtag = selmon->pertag->curtag;
-		selmon->pertag->curtag = tmptag;
-		}
-	}
-
+        else {
+            selmon->seltags ^= 1; /* toggle sel tagset */
+            if (arg->ui & TAGMASK) {
+                selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
+                selmon->pertag->prevtag = selmon->pertag->curtag;
+                for (i = 0; !(arg->ui & 1 << i); i++) ;
+                    selmon->pertag->curtag = i + 1;
+            }
+            else {
+                tmptag = selmon->pertag->prevtag;
+                selmon->pertag->prevtag = selmon->pertag->curtag;
+                selmon->pertag->curtag = tmptag;
+            }
+        }
+    }
 	selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag];
 	selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag];
 	selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag];
@@ -3000,11 +3038,10 @@ view(const Arg *arg)
     // 若当前tag无窗口 且附加了v参数 则执行
     if (arg->v) {
         for (c = selmon->clients; c; c = c->next)
-            if (c->tags & arg->ui && !HIDDEN(c))
-                n++;
-        if (n == 0) {
+            // if (c->tags & arg->ui && !HIDDEN(c))
+            if (c->tags & arg->ui)
+                return;
             spawn(&(Arg){ .v = (const char*[]){ "/bin/sh", "-c", arg->v, NULL } });
-        }
     }
 }
 
@@ -3130,7 +3167,7 @@ main(int argc, char *argv[])
 		die("pledge");
 #endif /* __OpenBSD__ */
 	scan();
-	runAutostart();
+	runautostart();
 	run();
 	cleanup();
 	XCloseDisplay(dpy);

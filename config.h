@@ -125,11 +125,10 @@ static const Key keys[] = {
 	TAGKEYS(                XK_5,                                4,0)
 	TAGKEYS(                XK_6,                                5,0)
 	TAGKEYS(                XK_7,                                6,0)
-//	TAGKEYS(                XK_7,                                6,"terminal ranger /seven")
 	TAGKEYS(                XK_8,                                7,0)
 	TAGKEYS(                XK_9,                                8,0)
-	TAGKEYS(                XK_backslash,                        9,0)
-//	TAGKEYS(                XK_backslash,                        9,"terminal mpv --shuffle /seven/music/aac/")
+	TAGKEYS(                XK_backslash,                        9,"terminal ranger")
+//	TAGKEYS(                XK_backslash,                        9,"terminal mpv --shuffle /music/aac/")
 	{ MODKEY|ShiftMask,     XK_F12,              quit,           {0} },                                
 };
 
