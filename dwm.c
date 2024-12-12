@@ -1897,7 +1897,7 @@ run(void)
 
 void
 runautostart(void) {
-	system("cd ~/.dwm; ./autostart.sh&");
+	if (system("~/.dwm/autostart.sh&"));
 }
 
 void
@@ -2401,8 +2401,8 @@ htile(Monitor *m)
 	Client *c;
 
 	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
-		if (n == 0)
-			return;
+	if (n == 0)
+		return;
 
 	if (n > m->nmaster)
 		mh = m->nmaster ? m->wh * m->mfact : 0;
@@ -3000,8 +3000,8 @@ view(const Arg *arg)
 		    if (arg->v) {
 		        for (c = selmon->clients; c; c = c->next)
 		            // if (c->tags & arg->ui && !HIDDEN(c))
-		            if (c->tags & arg->ui)
-		                return;
+					if (c->tags & arg->ui)
+						return;
 				spawn(&(Arg){ .v = (const char*[]){ "/bin/sh", "-c", arg->v, NULL } });
 				return;
 		    }
@@ -3013,8 +3013,8 @@ view(const Arg *arg)
             if (arg->ui & TAGMASK) {
                 selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
                 selmon->pertag->prevtag = selmon->pertag->curtag;
-                for (i = 0; !(arg->ui & 1 << i); i++) ;
-                    selmon->pertag->curtag = i + 1;
+				for (i = 0; !(arg->ui & 1 << i); i++);
+				selmon->pertag->curtag = i + 1;
             }
             else {
                 tmptag = selmon->pertag->prevtag;
@@ -3041,7 +3041,7 @@ view(const Arg *arg)
             // if (c->tags & arg->ui && !HIDDEN(c))
             if (c->tags & arg->ui)
                 return;
-            spawn(&(Arg){ .v = (const char*[]){ "/bin/sh", "-c", arg->v, NULL } });
+        spawn(&(Arg){ .v = (const char*[]){ "/bin/sh", "-c", arg->v, NULL } });
     }
 }
 
